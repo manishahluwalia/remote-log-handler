@@ -31,12 +31,12 @@
 3. Client logging level is configurable at runtime.</description>
 
     <scm>
-        <connection>scm:git:ssh://github.com/manish/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/manish/${project.artifactId}.git</developerConnection>
-        <url>https://github.com/manish/${project.artifactId}</url>
+        <connection>scm:git:ssh://github.com/manishahluwalia/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/manishahluwalia/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/manishahluwalia/${project.artifactId}</url>
     </scm>
     <issueManagement>
-        <url>https://github.com/manish/${project.artifactId}/issues</url>
+        <url>https://github.com/manishahluwalia/${project.artifactId}/issues</url>
         <system>Github Issues</system>
     </issueManagement>
     <distributionManagement>
@@ -329,5 +329,5 @@
     </build>
 
 
-    <url>https://github.com/manish/${project.artifactId}</url>
+    <url>https://github.com/manishahluwalia/${project.artifactId}</url>
 </project>
