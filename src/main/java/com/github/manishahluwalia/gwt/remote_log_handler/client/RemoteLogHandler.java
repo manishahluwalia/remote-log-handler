@@ -14,10 +14,7 @@
 * limitations under the License.
 */
 
-package github.manish.gwt.remote_log_handler.client;
-
-import github.manish.gwt.remote_log_handler.shared.RemoteLoggingService;
-import github.manish.gwt.remote_log_handler.shared.RemoteLoggingServiceAsync;
+package com.github.manishahluwalia.gwt.remote_log_handler.client;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -25,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.github.manishahluwalia.gwt.remote_log_handler.shared.RemoteLoggingService;
+import com.github.manishahluwalia.gwt.remote_log_handler.shared.RemoteLoggingServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * </li>
  * <li>Stores a context and sends the context over to the server along with the
  * buffer of log events. Think of this like MDC on the client side.</li>
- * <li>Sets the default github.manish.gwt.remote_log_handler threshold based on the url parameter
+ * <li>Sets the default com.github.manishahluwalia.gwt.remote_log_handler threshold based on the url parameter
  * <code>clientLogging</code></li>
  * </ul>
  * <p>
@@ -65,18 +64,18 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
     {
         public void onFailure (Throwable caught)
         {
-            wireLogger.log(Level.SEVERE, "Remote github.manish.gwt.remote_log_handler failed: ", caught);
+            wireLogger.log(Level.SEVERE, "Remote com.github.manishahluwalia.gwt.remote_log_handler failed: ", caught);
         }
 
         public void onSuccess (String result)
         {
             if (result != null)
             {
-                wireLogger.severe("Remote github.manish.gwt.remote_log_handler failed: " + result);
+                wireLogger.severe("Remote com.github.manishahluwalia.gwt.remote_log_handler failed: " + result);
             }
             else
             {
-                wireLogger.finest("Remote github.manish.gwt.remote_log_handler message acknowledged");
+                wireLogger.finest("Remote com.github.manishahluwalia.gwt.remote_log_handler message acknowledged");
             }
         }
     }
@@ -188,7 +187,7 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
             Level paramLevel = Level.parse(clientLogging);
             if (null != paramLevel)
             {
-                GWT.log("Setting client github.manish.gwt.remote_log_handler level to " + clientLogging
+                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLogging
                         + ", translated to " + paramLevel);
                 Logger.getLogger("").setLevel(paramLevel);
             }
@@ -199,7 +198,7 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
         }
         catch (Exception e)
         {
-            GWT.log("Setting client github.manish.gwt.remote_log_handler failed for string: " + clientLogging, e);
+            GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLogging, e);
         }
     }
 }

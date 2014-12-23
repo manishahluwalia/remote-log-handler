@@ -14,18 +14,20 @@
 * limitations under the License.
 */
 
-package github.manish.gwt.remote_log_handler.shared;
+package com.github.manishahluwalia.gwt.remote_log_handler.shared;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.LogRecord;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-@RemoteServiceRelativePath("remote_logging")
-public interface RemoteLoggingService extends RemoteService
+public interface RemoteLoggingServiceAsync
 {
-    String sendLogs (HashMap<String, String> context,
-            LinkedList<LogRecord> buffer);
+    /**
+     * @see RemoteLoggingService#sendLogs(HashMap, LinkedList)
+     */
+    void sendLogs (HashMap<String, String> context,
+            LinkedList<LogRecord> buffer, AsyncCallback<String> callback);
+
 }

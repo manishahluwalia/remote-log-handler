@@ -17,7 +17,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>github.manish.gwt</groupId>
+    <groupId>com.github.manishahluwalia.gwt</groupId>
     <artifactId>remote-log-handler</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -165,7 +165,7 @@
                 </executions>
                 <configuration>
                     <modules>
-                        <param>github.manish.gwt.remote_log_handler.RemoteLogHandler</param>
+                        <param>com.github.manishahluwalia.gwt.remote_log_handler.RemoteLogHandler</param>
                     </modules>
                     <enableAssertions>true</enableAssertions>
                     <logLevel>INFO</logLevel>

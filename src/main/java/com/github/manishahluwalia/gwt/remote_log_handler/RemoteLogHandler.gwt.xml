@@ -17,7 +17,7 @@
 	<source path="client" />
 	<source path="shared" />
 
-	<replace-with class="github.manish.gwt.remote_log_handler.client.RemoteLogHandler">
+	<replace-with class="com.github.manishahluwalia.gwt.remote_log_handler.client.RemoteLogHandler">
 		<when-type-is class="com.google.gwt.logging.client.SimpleRemoteLogHandler" />
 		<all>
 			<when-property-is name="gwt.logging.enabled" value="TRUE" />
