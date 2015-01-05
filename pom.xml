@@ -83,10 +83,6 @@
 
         <!-- GitHub Sites -->
         <github.version>0.10</github.version>
-        <!-- Used for releasing to sonatype as command line parameter -->
-        <gpg.passphrase>SetAsParam</gpg.passphrase>
-        <github.username>SetAsParam</github.username>
-        <github.password>SetAsParam</github.password>
 
         <!-- Maven -->
         <maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
