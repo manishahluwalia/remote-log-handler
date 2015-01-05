@@ -31,7 +31,6 @@ import com.google.gwt.logging.client.RemoteLogHandlerBase;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -164,41 +163,43 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
         contextInitialized = true;
     }
     
-    public void initialize ()
-    {
+    public void initialize () {
+        initialize(null);
+    }
+    
+    public void initialize (String clientLoggingLevel) {
         Window.addWindowClosingHandler(new ClosingHandler() {
             //@Override
             public void onWindowClosing (ClosingEvent e)
             {
-                // TODO: What happens if context is not initialized?
+                contextInitialized = true; // Assume context is initialized!
                 noBuffering = true;
                 flushLogs();
             }
         });
 
-        String clientLogging = Location.getParameter("clientLogging");
-        if (null == clientLogging)
+        if (null == clientLoggingLevel)
         {
             return;
         }
 
         try
         {
-            Level paramLevel = Level.parse(clientLogging);
+            Level paramLevel = Level.parse(clientLoggingLevel);
             if (null != paramLevel)
             {
-                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLogging
+                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLoggingLevel
                         + ", translated to " + paramLevel);
                 Logger.getLogger("").setLevel(paramLevel);
             }
             else
             {
-                GWT.log("Null parsed param level for clientLogging: " + clientLogging);
+                GWT.log("Null parsed param level for clientLogging: " + clientLoggingLevel);
             }
         }
         catch (Exception e)
         {
-            GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLogging, e);
+            GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLoggingLevel, e);
         }
     }
 }
