@@ -57,23 +57,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * {@link #getContext()} to get the context map to fill out.
  * </p>
  */
-public class RemoteLogHandler extends RemoteLogHandlerBase
-{
-    class DefaultCallback implements AsyncCallback<String>
-    {
-        public void onFailure (Throwable caught)
-        {
+public class RemoteLogHandler extends RemoteLogHandlerBase {
+    class DefaultCallback implements AsyncCallback<String> {
+        public void onFailure(Throwable caught) {
             wireLogger.log(Level.SEVERE, "Remote com.github.manishahluwalia.gwt.remote_log_handler failed: ", caught);
         }
 
-        public void onSuccess (String result)
-        {
-            if (result != null)
-            {
+        public void onSuccess(String result) {
+            if (result != null) {
                 wireLogger.severe("Remote com.github.manishahluwalia.gwt.remote_log_handler failed: " + result);
-            }
-            else
-            {
+            } else {
                 wireLogger.finest("Remote com.github.manishahluwalia.gwt.remote_log_handler message acknowledged");
             }
         }
@@ -95,21 +88,18 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
     private boolean contextInitialized = false;
     private boolean noBuffering = !GWT.isProdMode(); // Never buffer in dev mode. Buffer as long as possible in Prod mode
 
-    public RemoteLogHandler ()
-    {
-        if (null != singleton)
-        {
+    public RemoteLogHandler() {
+        if (null != singleton) {
             throw new RuntimeException("RemoteLogHandler needs to be a singleton");
         }
 
-        this.service = (RemoteLoggingServiceAsync)GWT.create(RemoteLoggingService.class);
+        this.service = (RemoteLoggingServiceAsync) GWT.create(RemoteLoggingService.class);
         this.callback = new DefaultCallback();
         this.logBuffer = new LinkedList<LogRecord>();
 
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
             //@Override
-            public boolean execute ()
-            {
+            public boolean execute() {
                 flushLogs();
                 return true;
             }
@@ -118,19 +108,15 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
         singleton = this;
     }
 
-    public static RemoteLogHandler get ()
-    {
-        if (null == singleton)
-        {
+    public static RemoteLogHandler get() {
+        if (null == singleton) {
             singleton = new RemoteLogHandler();
         }
         return singleton;
     }
 
-    public void flushLogs ()
-    {
-        if (!logBuffer.isEmpty() && contextInitialized)
-        {
+    public void flushLogs() {
+        if (!logBuffer.isEmpty() && contextInitialized) {
             LinkedList<LogRecord> buffer = logBuffer;
             logBuffer = new LinkedList<LogRecord>();
             service.sendLogs(context, buffer, callback);
@@ -138,67 +124,52 @@ public class RemoteLogHandler extends RemoteLogHandlerBase
     }
 
     @Override
-    public void publish (LogRecord record)
-    {
-        if (isLoggable(record))
-        {
+    public void publish(LogRecord record) {
+        if (isLoggable(record)) {
             logBuffer.addLast(record);
 
-            if (noBuffering 
-                    || record.getLevel().intValue() >= FLUSH_LOG_LEVEL_THRESHOLD.intValue()
-                    || logBuffer.size() >= BUFFER_SIZE_THRESHOLD)
-            {
+            if (noBuffering || record.getLevel().intValue() >= FLUSH_LOG_LEVEL_THRESHOLD.intValue() || logBuffer.size() >= BUFFER_SIZE_THRESHOLD) {
                 flushLogs();
             }
         }
     }
 
-    public HashMap<String, String> getContext ()
-    {
+    public HashMap<String, String> getContext() {
         return context;
     }
 
-    public void contextInitalized ()
-    {
+    public void contextInitalized() {
         contextInitialized = true;
     }
-    
-    public void initialize () {
+
+    public void initialize() {
         initialize(null);
     }
-    
-    public void initialize (String clientLoggingLevel) {
+
+    public void initialize(String clientLoggingLevel) {
         Window.addWindowClosingHandler(new ClosingHandler() {
             //@Override
-            public void onWindowClosing (ClosingEvent e)
-            {
+            public void onWindowClosing(ClosingEvent e) {
                 contextInitialized = true; // Assume context is initialized!
                 noBuffering = true;
                 flushLogs();
             }
         });
 
-        if (null == clientLoggingLevel)
-        {
+        if (null == clientLoggingLevel) {
             return;
         }
 
-        try
-        {
+        try {
             Level paramLevel = Level.parse(clientLoggingLevel);
-            if (null != paramLevel)
-            {
-                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLoggingLevel
-                        + ", translated to " + paramLevel);
+            if (null != paramLevel) {
+                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLoggingLevel + ", translated to "
+                        + paramLevel);
                 Logger.getLogger("").setLevel(paramLevel);
-            }
-            else
-            {
+            } else {
                 GWT.log("Null parsed param level for clientLogging: " + clientLoggingLevel);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLoggingLevel, e);
         }
     }
