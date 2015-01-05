@@ -40,10 +40,6 @@
         <system>Github Issues</system>
     </issueManagement>
     <distributionManagement>
-        <site>
-            <id>${project.artifactId}-site</id>
-            <url>http://growbit.github.io/turbogwt/</url>
-        </site>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
