@@ -53,8 +53,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * </ul>
  * <p>
  * To use this, implement {@link RemoteLoggingService} on the server side. On
- * the client side call {@link #initialize()} and optionallay,
- * {@link #getContext()} to get the context map to fill out.
+ * the client side call {@link #initialize()} and optionally, fill out
+ * the context (using {@link #getContext(String)} etc.)
+ * pausing ({@link #pauseAutoFlushing()}) and unpausing ({@link #unpauseAutoFlushing()})
+ * between related changes to the context, if there are many.
  * </p>
  */
 public class RemoteLogHandler extends RemoteLogHandlerBase {
@@ -85,8 +87,8 @@ public class RemoteLogHandler extends RemoteLogHandlerBase {
     private RemoteLoggingServiceAsync service;
     private LinkedList<LogRecord> logBuffer;
     private final HashMap<String, String> context = new HashMap<String, String>();
-    private boolean contextInitialized = false;
-    private boolean noBuffering = !GWT.isProdMode(); // Never buffer in dev mode. Buffer as long as possible in Prod mode
+    private boolean pauseAutoFlushing = false;
+    private boolean terminating = false;
 
     public RemoteLogHandler() {
         if (null != singleton) {
@@ -116,7 +118,7 @@ public class RemoteLogHandler extends RemoteLogHandlerBase {
     }
 
     public void flushLogs() {
-        if (!logBuffer.isEmpty() && contextInitialized) {
+        if (!logBuffer.isEmpty()) {
             LinkedList<LogRecord> buffer = logBuffer;
             logBuffer = new LinkedList<LogRecord>();
             service.sendLogs(context, buffer, callback);
@@ -128,18 +130,11 @@ public class RemoteLogHandler extends RemoteLogHandlerBase {
         if (isLoggable(record)) {
             logBuffer.addLast(record);
 
-            if (noBuffering || record.getLevel().intValue() >= FLUSH_LOG_LEVEL_THRESHOLD.intValue() || logBuffer.size() >= BUFFER_SIZE_THRESHOLD) {
+            if (terminating || 
+                    (!pauseAutoFlushing && (record.getLevel().intValue() >= FLUSH_LOG_LEVEL_THRESHOLD.intValue() || logBuffer.size() >= BUFFER_SIZE_THRESHOLD))) {
                 flushLogs();
             }
         }
-    }
-
-    public HashMap<String, String> getContext() {
-        return context;
-    }
-
-    public void contextInitalized() {
-        contextInitialized = true;
     }
 
     public void initialize() {
@@ -150,8 +145,7 @@ public class RemoteLogHandler extends RemoteLogHandlerBase {
         Window.addWindowClosingHandler(new ClosingHandler() {
             //@Override
             public void onWindowClosing(ClosingEvent e) {
-                contextInitialized = true; // Assume context is initialized!
-                noBuffering = true;
+                terminating = true;
                 flushLogs();
             }
         });
@@ -163,14 +157,40 @@ public class RemoteLogHandler extends RemoteLogHandlerBase {
         try {
             Level paramLevel = Level.parse(clientLoggingLevel);
             if (null != paramLevel) {
-                GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLoggingLevel + ", translated to "
+                wireLogger.fine("Setting client com.github.manishahluwalia.gwt.remote_log_handler level to " + clientLoggingLevel + ", translated to "
                         + paramLevel);
+                setLevel(Level.ALL); // set the parent remote log handler to not throttle us, we do our own throttling
+                Logger.getGlobal().setLevel(paramLevel);
                 Logger.getLogger("").setLevel(paramLevel);
             } else {
-                GWT.log("Null parsed param level for clientLogging: " + clientLoggingLevel);
+                wireLogger.warning("Null parsed param level for clientLogging: " + clientLoggingLevel);
             }
         } catch (Exception e) {
-            GWT.log("Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLoggingLevel, e);
+            wireLogger.log(Level.SEVERE, "Setting client com.github.manishahluwalia.gwt.remote_log_handler failed for string: " + clientLoggingLevel, e);
         }
+    }
+    
+    public void addContext(String key, String val) {
+        context.put(key, val);
+    }
+    
+    public String getContext(String key) {
+        return context.get(key);
+    }
+    
+    public void removeContext(String key) {
+        context.remove(key);
+    }
+    
+    public void clearContext() {
+        context.clear();
+    }
+    
+    public void pauseAutoFlushing() {
+        pauseAutoFlushing = true;
+    }
+    
+    public void unpauseAutoFlushing() {
+        pauseAutoFlushing = false;
     }
 }

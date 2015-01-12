@@ -19,16 +19,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.manishahluwalia.gwt</groupId>
 	<artifactId>remote-log-handler</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 	<name>Smart Remote Log Handler for GWT</name>
 	<description>This is a remote logging handler for GWT, meant as a replacement to SimpleRemoteLogHandler. It provides:
 
 1. smarter synching of logs to the remote server, using buffering for efficiency in production with automatic flushing on timer / configurable log severity / application unload.
 
-2.  For development mode, it trades off efficiency for immediate log delivery.
-
-3. Client logging level is configurable at runtime.</description>
+2. Client logging level is configurable at runtime.</description>
 
 	<scm>
 		<connection>scm:git:git://github.com/manishahluwalia/${project.artifactId}.git</connection>
